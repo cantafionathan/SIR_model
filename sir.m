@@ -1,3 +1,7 @@
+% ADAPTED FROM MODEL IN THIS PAPER
+% Turkyilmazoglu M. An extended epidemic model with vaccination: Weak-immune SIRVI. 
+% Physica A. 2022;598:127429. doi:10.1016/j.physa.2022.127429
+
 N = 1000000; % total population
 I0 = 0.01*N; % number of people sick once the health authority notices an issue
 S = N - I0; % total number of susceptible individuals
@@ -28,7 +32,7 @@ beta_unvac = daily_interactions*probability_of_spread_unvaccinated;
 beta_vac = daily_interactions*probability_of_spread_vaccinated;
 
 % gamma = recovery rate
- gamma = 1/14; % covid % recovery in 2 weeks????
+gamma = 1/14; % covid % recovery in 2 weeks????
 %gamma = 1/31;
 
 % treatment we can change:
