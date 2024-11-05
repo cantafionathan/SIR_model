@@ -11,11 +11,17 @@ R = 0; % total number of recovered individuals
 % infected is asymptomatic or not, then quarantine some portion of those that showing)
 % blocking factors???
 
+%probability that an infectious individual is sympomatic
+prob_symptomatic = 0.7;
+% treatment we can change:
+quarantine = 0; % quarantining sympomatic individuals, yes or no
+
 base_num_inter = 20; % number of daily interactions if there was no policies
-isolation_factor = 0; % social isolation policy randing from zero isolation to total isolation
-daily_interactions = base_num_inter*(1-isolation_factor); % average number of daily interactions a susceptible individual has
+% treatment we can change:
+isolation_factor = 0; % social isolation policy ranging from zero isolation to total isolation
+daily_interactions = base_num_inter*(1-isolation_factor)*(1-quarantine*(1-prob_symptomatic)); % average number of daily interactions a susceptible individual has
 probability_of_spread_unvaccinated = 0.1; % probabilty that an unvaccinated individual gets infected from interacting with an infected individual
-probability_of_spread_vaccinated = 0.01; % probability that a vaccinated indidual gets infected from interacting with an infected individual
+probability_of_spread_vaccinated = 0.01*probability_of_spread_unvaccinated; % probability that a vaccinated indidual gets infected from interacting with an infected individual
 
 % beta = transmission rate
 beta_unvac = daily_interactions*probability_of_spread_unvaccinated;
@@ -24,8 +30,9 @@ beta_vac = daily_interactions*probability_of_spread_vaccinated;
 % gamma = recovery rate
 gamma = 0.2;
 
+% treatment we can change:
 % nu = vaccination rate of susceptible individuals
-nu = 0.2;
+nu = 0.01;
 
 % ds/dt = -beta_unvac*s*i - nu*s
 % di/dt beta_unvac*s*i + beta_vac*v*i - gamma*i
@@ -60,3 +67,8 @@ plot(1:numsteps, s, 'b', ...
     1:numsteps, v, 'g', ...
     1:numsteps, r, 'k')
 legend('Susceptible', 'Infected', 'Vaccinated', 'Recovered')
+
+quarantine
+isolation_factor
+nu
+max(i)
