@@ -1,5 +1,5 @@
-N = 100; % total population
-I0 = 0.01*N;
+N = 1000000; % total population
+I0 = 0.01*N; % number of people sick once the health authority notices an issue
 S = N - I0; % total number of susceptible individuals
 I = I0; % total number of infected individuals
 V = 0; % total number of vaccinated individuals
@@ -12,14 +12,14 @@ R = 0; % total number of recovered individuals
 % blocking factors???
 
 %probability that an infectious individual is sympomatic
-prob_symptomatic = 0.7;
+prob_symptomatic = 0.4; % covid
 % treatment we can change:
 quarantine = 0; % quarantining sympomatic individuals, yes or no
 
 base_num_inter = 20; % number of daily interactions if there was no policies
 % treatment we can change:
 isolation_factor = 0; % social isolation policy ranging from zero isolation to total isolation
-daily_interactions = base_num_inter*(1-isolation_factor)*(1-quarantine*(1-prob_symptomatic)); % average number of daily interactions a susceptible individual has
+daily_interactions = base_num_inter*(1-isolation_factor)*(1-quarantine*prob_symptomatic); % average number of daily interactions a susceptible individual has
 probability_of_spread_unvaccinated = 0.1; % probabilty that an unvaccinated individual gets infected from interacting with an infected individual
 probability_of_spread_vaccinated = 0.01*probability_of_spread_unvaccinated; % probability that a vaccinated indidual gets infected from interacting with an infected individual
 
@@ -28,11 +28,12 @@ beta_unvac = daily_interactions*probability_of_spread_unvaccinated;
 beta_vac = daily_interactions*probability_of_spread_vaccinated;
 
 % gamma = recovery rate
-gamma = 0.2;
+ gamma = 1/14; % covid % recovery in 2 weeks????
+%gamma = 1/31;
 
 % treatment we can change:
 % nu = vaccination rate of susceptible individuals
-nu = 0.01;
+nu = 0; % levels 0, 0.1, 0.2, 0.3
 
 % ds/dt = -beta_unvac*s*i - nu*s
 % di/dt beta_unvac*s*i + beta_vac*v*i - gamma*i
@@ -40,8 +41,8 @@ nu = 0.01;
 % dr/dt = gamma*i \\ can be solved for from s + i + v + r = 1
 
 % diff equations with forward euler:
-k = 1;
-Tf = 60; % days
+k = 0.0001; % look at this
+Tf = 90; % days
 numsteps = ceil(Tf/k);
 k = Tf/numsteps;
 
@@ -68,7 +69,4 @@ plot(1:numsteps, s, 'b', ...
     1:numsteps, r, 'k')
 legend('Susceptible', 'Infected', 'Vaccinated', 'Recovered')
 
-quarantine
-isolation_factor
-nu
 max(i)
