@@ -27,14 +27,14 @@ n = length(L);
 L = cat(n+1,L{:});
 L = fliplr(reshape(L,[],n));
 
-A1 = L(1:end, 1);
-A2 = L(1:end, 2);
-B1 = L(1:end, 3);
-B2 = L(1:end, 4);
-C1 = L(1:end, 5);
-C2 = L(1:end, 6);
-D1 = A1.*A2.*B1.*B2;
-D2 = A1.*A2.*C1.*C2;
+A1 = L(1:end, 1); % 1
+A2 = L(1:end, 2); % 3
+B1 = L(1:end, 3); % 2
+B2 = L(1:end, 4); % 5
+C1 = L(1:end, 5); % 4
+C2 = L(1:end, 6); % 6
+D1 = A1.*B1.*A2.*C1; % 7 = 1234
+D2 = A1.*B1.*B2.*C2; % 8 = 1256
 
 % compute levels of all the factors that aren't random
 
