@@ -246,7 +246,7 @@ function load = pandemic(num_daily, isolation, prob_spread, recovery_rate, vac_r
     % fprintf('RESPONSE: \n')
     % fprintf('peak of infected population = %d%% \n', round(max(i)*100));
     
-    load = max(i);
+    load = max(i + q); % people in quarantine are not getting anyone sick but they are burden on healthcare resources
 
 end
 

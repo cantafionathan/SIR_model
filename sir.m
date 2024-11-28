@@ -21,16 +21,16 @@ base_num_inter = 20;
 
 % social isolation policy ranging from zero isolation to total isolation
 % reduces number of daily interactions
-isolation_factor = 0; 
+isolation_factor = 0.5; 
 
 % average number of daily interactions
 daily_interactions = base_num_inter*(1-isolation_factor); 
 
 % nu = vaccination rate of susceptible individuals
-nu = 0.0; % levels 0, 0.1, 0.2, 0.3
+nu = 0.006; % levels 0, 0.1, 0.2, 0.3
 
 % vaccine effectivness
-vac_eff = 0.01;
+vac_eff = 0.4; % prob(infected|vac) = vac_eff*prob(infected|unvac)
 
 % probability of getting infected from interacting w/ infected invdividual
 probability_of_spread_unvaccinated = 0.1; 
@@ -44,13 +44,13 @@ beta_vac = daily_interactions*probability_of_spread_vaccinated;
 gamma = 1/14; % covid recovery in 2 weeks
 
 %probability that an infectious individual is sympomatic
-prob_symptomatic = 0.4; % covid
+prob_symptomatic = 1; % covid
 
 % quarantining sympomatic individuals
 % should always be set to 1, if no quarantine set quarantine duration to 0
 quarantine = 1; 
 
-qd = 5;
+qd = 14;
 quarantine_duration = min(qd, 1/gamma); % 5 days or recovery
 % rate at which we take people out of quarantine
 if quarantine_duration == 0
@@ -123,4 +123,4 @@ fprintf('vaccine effectivness (how much does it reduce prob(spread)?) = %d \n',v
 fprintf('prob_symptomatic = %d \n',prob_symptomatic);
 fprintf('quarantine_duration = %d days \n',quarantine_duration);
 fprintf('RESPONSE: \n')
-fprintf('peak of infected population = %d%% \n', round(max(i)*100));
+fprintf('peak of infected population = %d%% \n', round(max(i + q)*100));
