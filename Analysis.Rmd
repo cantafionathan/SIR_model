@@ -13,10 +13,10 @@ library(dplyr)
 ```
 
 ```{r}
-data <- read.csv("fractional_pandemic.csv")
+data <- read.csv("pandemic.csv")
 head(data)
 summary(data)
-# peak_infected is i+q
+# peak.inf is i+q
 
 # TODO need to consider the aliasing structure so that we know what tertiary effects cannot actually be estimated here and mention this in report
 
@@ -25,15 +25,15 @@ summary(data)
 # TODO Treatment contrasts?
 
 # Anova
-anova_model <- aov(peak_infected ~ social_isolation * rate_vaccinated * 
-                quarantine_duration * daily_interactions, data = data)
+anova_model <- aov(peak.inf ~ soc.iso * rate.vac * 
+                quar.dur * num.daily, data = data)
 summary(anova_model)
 
 # Interaction plots
 interaction.plot(
-  x.factor = data$social_isolation,
-  trace.factor = data$rate_vaccinated,
-  response = data$peak_infected,
+  x.factor = data$soc.iso,
+  trace.factor = data$rate.vac,
+  response = data$peak.inf,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Social Isolation x Vaccination Rate",
@@ -43,9 +43,9 @@ interaction.plot(
 )
 
 interaction.plot(
-  x.factor = data$social_isolation,
-  trace.factor = data$quarantine_duration,
-  response = data$peak_infected,
+  x.factor = data$soc.iso,
+  trace.factor = data$quar.dur,
+  response = data$peak.inf,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Social Isolation x Quarantine Duration",
@@ -55,9 +55,9 @@ interaction.plot(
 )
 
 interaction.plot(
-  x.factor = data$social_isolation,
-  trace.factor = data$daily_interactions,
-  response = data$peak_infected,
+  x.factor = data$soc.iso,
+  trace.factor = data$num.daily,
+  response = data$peak.inf,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Social Isolation x Daily Interactions",
@@ -67,9 +67,9 @@ interaction.plot(
 )
 
 interaction.plot(
-  x.factor = data$rate_vaccinated,
-  trace.factor = data$quarantine_duration,
-  response = data$peak_infected,
+  x.factor = data$rate.vac,
+  trace.factor = data$quar.dur,
+  response = data$peak.inf,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Vaccination Rate x Quarantine Duration",
@@ -79,9 +79,9 @@ interaction.plot(
 )
 
 interaction.plot(
-  x.factor = data$rate_vaccinated,
-  trace.factor = data$daily_interactions,
-  response = data$peak_infected,
+  x.factor = data$rate.vac,
+  trace.factor = data$num.daily,
+  response = data$peak.inf,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Vaccination Rate x Daily Interactions",
@@ -91,9 +91,9 @@ interaction.plot(
 )
 
 interaction.plot(
-  x.factor = data$quarantine_duration,
-  trace.factor = data$daily_interactions,
-  response = data$peak_infected,
+  x.factor = data$quar.dur,
+  trace.factor = data$num.daily,
+  response = data$peak.inf,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Quarantine Duration x Daily Interactions",
@@ -106,8 +106,8 @@ interaction.plot(
 
 
 # Regression and Box-Cox
-lm_model <- lm(peak_infected ~ social_isolation * rate_vaccinated * 
-                quarantine_duration * daily_interactions, data = data)
+lm_model <- lm(peak.inf ~ soc.iso * rate.vac * 
+                quar.dur * num.daily, data = data)
 summary(lm_model)
 
 # Box-Cox Transformation
@@ -135,50 +135,50 @@ qqnorm(resid(lm_model))
 
 
 # Bunch of other plots
-ggplot(data, aes(x = as.factor(social_isolation), y = peak_infected)) +
+ggplot(data, aes(x = as.factor(soc.iso), y = peak.inf)) +
   geom_boxplot() +
   labs(title = "Effect of Social Isolation on Peak Infected", 
        x = "Social Isolation Level", y = "Peak Infected")
 
-ggplot(data, aes(x = as.factor(rate_vaccinated), y = peak_infected)) +
+ggplot(data, aes(x = as.factor(rate.vac), y = peak.inf)) +
   geom_boxplot() +
   labs(title = "Effect of Vaccination Rate on Peak Infected", 
        x = "Vaccination Rate", y = "Peak Infected")
 
-ggplot(data, aes(x = as.factor(quarantine_duration), y = peak_infected)) +
+ggplot(data, aes(x = as.factor(quar.dur), y = peak.inf)) +
   geom_boxplot() +
   labs(title = "Effect of Quarantine Duration on Peak Infected",
     x = "Quarantine Duration (Days)", y = "Peak Infected")
 
-ggplot(data, aes(x = as.factor(daily_interactions), y = peak_infected)) +
+ggplot(data, aes(x = as.factor(num.daily), y = peak.inf)) +
   geom_boxplot() +
   labs(title = "Effect of Daily Interactions on Peak Infected",
     x = "Daily Interactions", y = "Peak Infected")
 
-pairs(data[, c("peak_infected", "social_isolation", "rate_vaccinated", 
-               "quarantine_duration", "daily_interactions")], 
+pairs(data[, c("peak.inf", "soc.iso", "rate.vac", 
+               "quar.dur", "num.daily")], 
       main = "Scatterplot Matrix") #not useful
 
-ggplot(data, aes(x = peak_infected)) +
+ggplot(data, aes(x = peak.inf)) +
   geom_histogram(bins = 30) +
   labs(title = "Distribution of Peak Infected", x = "Peak Infected", y = "Count")
 
-ggplot(data, aes(x = peak_infected, fill = as.factor(social_isolation))) +
+ggplot(data, aes(x = peak.inf, fill = as.factor(soc.iso))) +
   geom_density(alpha = 0.5) +
   labs(title = "Density Plot of Peak Infected by Social Isolation", 
        x = "Peak Infected", fill = "Social Isolation Level")
 
-ggplot(data, aes(x = peak_infected, fill = as.factor(rate_vaccinated))) +
+ggplot(data, aes(x = peak.inf, fill = as.factor(rate.vac))) +
   geom_density(alpha = 0.5) +
   labs(title = "Density Plot of Peak Infected by Vaccination Rate", 
        x = "Peak Infected", fill = "Vaccination Rate")
 
-ggplot(data, aes(x = peak_infected, fill = as.factor(quarantine_duration))) +
+ggplot(data, aes(x = peak.inf, fill = as.factor(quar.dur))) +
   geom_density(alpha = 0.5) +
   labs(title = "Density Plot of Peak Infected by Quarantine Duration (Days)", 
        x = "Peak Infected", fill = "Quarantine Duration (Days)")
 
-ggplot(data, aes(x = peak_infected, fill = as.factor(daily_interactions))) +
+ggplot(data, aes(x = peak.inf, fill = as.factor(num.daily))) +
   geom_density(alpha = 0.5) +
   labs(title = "Density Plot of Peak Infected by Daily Interactions", 
        x = "Peak Infected", fill = "Daily Interactions")
