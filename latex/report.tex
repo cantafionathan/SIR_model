@@ -53,6 +53,8 @@
 \usepackage{csquotes}       % Include csquotes
 \usepackage{diagbox}
 \usepackage{comment}
+\usepackage{siunitx}
+
 
 % Customize line spacing
 \usepackage{setspace}
@@ -80,6 +82,21 @@
 \usepackage{caption} % for customizing caption format
 \captionsetup[table]{position=top} % caption position for tables
 
+%% Define the unnumbered list
+%\makeatletter
+%\newenvironment{unlist}{%
+%  \begin{list}{}{%
+%    \setlength{\labelwidth}{0pt}%
+%    \setlength{\labelsep}{0pt}%
+%    \setlength{\leftmargin}{2em}%
+%    \setlength{\itemindent}{-2em}%
+%    \setlength{\topsep}{\medskipamount}%
+%    \setlength{\itemsep}{3pt}%
+%  }%
+%}{%
+%  \end{list}%
+%}
+%\makeatother
 
 % Suppress the warning about \@parboxrestore
 \pdfsuppresswarningpagegroup=1
@@ -97,13 +114,13 @@
 \maketitle
 
 \begin{abstract}
-Abstracts must be able to stand alone and so cannot contain citations to the paper’s references, equations, etc. An abstract must consist of a single paragraph and be concise. Because of online formatting, abstracts must appear as plain as possible. Three to six keywords must be included. Each keyword should not exceed three words. %\lipsum[1]
+In light of the COVID-19 pandemic, understanding the impact of public health interventions on epidemic spread has become crucial for managing future outbreaks. A common framework for pandemic modelling is the SIR (Susceptible/Infected/Recovered) model which uses differential equations to model disease spread. There are numerous extensions of this model that add more groups (such as SIVQR -- Susceptible/Infected/Vaccinated/Quarantined/Recovered), and there innumerable different policy interventions/characteristics one can consider in the model. This report aims to determine which policy measures are most important in managing disease spread.
 \end{abstract} 
 
 %-------------------------------------------
 % Paper Body
 %-------------------------------------------
-\section{Introduction}
+\section{Introduction}\label{section1}
 
 You need to say enough to understand the problem and objectives and a
 quick guide to your approach. At the end of the introduction, give a brief outline of what
@@ -112,24 +129,69 @@ experimental design will be given in Section 2, . . .''
 Probably we will cite here
 \cite{TURKYILMAZOGLU2022127429} % this is how to add the citation
 
-\section{The experimental design}
-Give enough details about the factors and the
-response (give units). Rather than numerous sentences, it will be easier for the reader
-to see at a glance the factors and their levels by constructing a table with the name, a
-brief description, and the levels of each factor. In the text, refer the reader to the table.
-You have seen many such tables in worksheets, for example. The text can then focus on
-anything unusual that needs explanation and the considerations leading to the choice of
-factors and their levels.
+\section{The experimental design}\label{section2}
 
-Describe the experimental plan (e.g., a fractional factorial with 5 factors and 8 runs). If
-necessary, explain how the design was constructed, e.g., the aliasing structure you chose.
+In the \verb`MATLAB` code there are eight parameters of interest that we can tune. They are in no particular order:  \verb`prob_spread`, \verb`recovery_rate`, \verb`vac_eff`, \verb`prob_sympt`,  \verb`isolation`,  \verb`vac_rate`, \verb`quar_dur`, \verb`num_daily`.
 
-Describe any blocking factors and the randomization. Here it is best to err on the side of
-plenty of detail. 11The experiment was randomized,'' is not convincing. If you randomized
-the run order, say, then also give the actual run order in then data table. Exercise 7.7,
-based on a real example, is a good illustration.
+These represent (respectively) the probability that an unvaccinated individual will catch the disease from a single interaction with an infectious individual, the average rate of recovery for an infected individual in days, the proportional effectiveness of the vaccine (for example 0.1 means that vaccinated individuals are 10\% as likely to get infected compared to if they were unvaccinated), the probability that an infected individual shows symptoms, the rate at which the susceptible population is vaccinated in days, the duration that symptomatic individuals are quarantined in days, the average number of daily interactions that an individual has per day. 
 
-\section{Analysis}
+The first of four of these parameters were randomized in simulation for each observation. This choice was made to reduce the number of effective runs, and because these parameters would be hard (or potentially impossible) to measure in the real world. More detail is given in Appendix~\ref{appendixA}. The last four of these parameters were considered as treatments and their levels were thus pre-designed and recorded. 
+
+The response of interest is \underline{\phantom{aaaa}}. A complete description of the data is contained in Appendix~\ref{appendixB}
+
+For a summary of the experimental factors, see Table~\ref{tab:factor_summary}. These levels were chosen based on \underline{\phantom{aaaa}}. 
+
+The design is a full $3^4$ factorial and our model is
+\vspace*{-5mm}
+\begin{align*}
+	Y_{ijk\ell}=\mu+\alpha_i+\nu_j+\kappa_k+\eta_\ell+(\alpha\nu)_{ij}+(\alpha\kappa)_{ik}+(\alpha\eta)_{i\ell}+(\nu\kappa)_{jk}+(\nu\eta)_{j\ell} + (\kappa\eta)_{k\ell}\\
+	+(\alpha\nu\kappa)_{ijk}+(\alpha\nu\eta)_{ij\ell}+(\alpha\kappa\eta)_{ik\ell} + (\nu\kappa\eta)_{jk\ell} + (\alpha\nu\kappa\eta)_{ijk\ell}+E_{ijk\ell}
+\end{align*}
+where $i,j,k,\ell=1,2,3$ and:
+\vspace*{-3mm}
+\begin{itemize}
+	\item $\mu$ is a main effect common to all observations
+	\vspace*{-3mm}
+	\item $\alpha_i$ is the effect on \verb`load` of \verb`soc.iso` at level $i$
+	\vspace*{-3mm}
+	\item $\nu_j$ is the effect on \verb`load` of \verb`vac.rate` at level $j$
+	\vspace*{-3mm}
+	\item $\kappa_k$ is the effect on \verb`load` of \verb`quar.dur` at level $k$
+	\vspace*{-3mm}
+	\item $\eta_\ell$ is the effect on \verb`load` of \verb`num.daily` at level $\ell$
+	\vspace*{-3mm}
+	\item $(\alpha\nu)_{ij}$ is the ``interaction effect'' on \verb`load` of \verb`soc.iso` and \verb`vac.rate` at levels $i,j$
+	\vspace*{-3mm}
+	\item and similarly for other higher order effects
+	\vspace*{-3mm}
+	\item $E_{ijk\ell}\sim\mathcal{N}(0,\sigma^2)$
+\end{itemize}
+
+
+%\begin{table}[H]
+%    \centering
+%    \begin{tabular}{l l l}\hline
+%         Factor &  Levels & Symbol \\ \hline\hline
+%         Isolation & Low (0), Medium (0.5), High (1) & \verb`soc.iso` \\ \hline
+%         Vaccination rate & 0 \si{ppd}, 1 \si{ppd}, 2 \si{ppd} & \verb`vac.rate` \\ \hline
+%         Quarantine duration & 0 days, 7 days, 14 days & \verb`quar.dur`\\ \hline
+%         Average number of daily interactions & 15 \si{ipd}, 30 \si{ipd}, 45 \si{ipd} & \verb`num.daily` \\ \hline \\
+%    \end{tabular}
+%    \caption{\si{ppd} is ``percent population vaccinated per day'' and \si{ipd} is ``average number of daily interactions per day''}
+%    \label{tab:factor_summary}
+%\end{table}
+
+
+
+
+
+\section{Analysis}\label{section3}
+
+%\begin{figure}[H]
+%	\includegraphics[width=\linewidth]{soc-iso:vac-rate_interaction_plot.pdf}
+%	\caption{Interaction plot}	 % make better captions
+%	\label{fig:soc.iso:vac.rate_interaction}
+%\end{figure}
 
 Try to be specific about your findings, and present numerical
 estimated effects, recommended levels, the estimated response at the recommended levels,
@@ -152,7 +214,7 @@ error 54 kg. Always give units of measurement for estimates and standard errors.
 If a transformation has been applied you will often want to convert predictions on the
 transformed scale back to the original scale.
 
-\section{Conclusions}
+\section{Conclusions}\label{section4}
 
 The conclusions are often essentially a summary of the
 important results.
@@ -178,48 +240,66 @@ were conducted?
 % from here on sections are numerated with capital letters 
 %\appendix
 
-% Change equation numbering format to be sequential within sections in the appendix
-\renewcommand\theequation{\Alph{section}\arabic{equation}} % Redefine equation numbering format
-\counterwithin*{equation}{section} % Number equations within sections
-\renewcommand\thefigure{\Alph{section}\arabic{figure}} % Redefine equation numbering format
-\counterwithin*{figure}{section} % Number equations within sections
-\renewcommand\thetable{\Alph{section}\arabic{table}} % Redefine equation numbering format
-\counterwithin*{table}{section} % Number equations within sections
-
-
 \begin{appendices}
 
+\newpage
 \section*{Appendix}
 %--- Section ---%
+\section{Discussion of simulation}\label{appendixA}
 
-Include an appendix with a clear description of all variables. Upload
-the data and all R code as well as your report to canvas.ubc.ca. Please ensure the file
-names include data, R-code and report, respectively, so that it is clear what is in each
-file.
+The model considers five distinct groups: $S$, $I$, $V$, $Q$, and $R$; which are the number of susceptible, infected, vaccinated, quarantined and recovered individuals respectively. If $N$ is the total population, we can define $s=S/N$, $i=I/N$, $v=V/N$, $q=Q/N$, $r=R/N$ and work with these population proportions. The system of differential equations is
+\begin{equation}
+	\begin{cases}
+	ds/dt = -\beta_0si-\nu s\\
+	di/dt = \beta_0si + \beta_1 vi - \mathbb{I}_QP_\text{sympt}i+(1-\gamma_Q)\kappa q - \gamma i\\
+	dv/dt = \nu s - \beta_1	vi\\
+	dq/dt = \mathbb{I}_QP_\text{sympt}i - \kappa q\\
+	dr/dt = \gamma i +\gamma_Q\kappa q
+	\end{cases}
+\end{equation}
+where 
+\vspace*{-3mm}
+\begin{itemize}
+	\item $\beta_0$ and $\beta_1$ are the transmission rate ($\text{\# daily interactions}\times\mathbb{P}[\text{spread per interaction}]$) for unvaccinated and vaccinated individuals respectively
+	\vspace*{-3mm}
+	\item $\nu$ is the vaccination rate of susceptible individuals
+	\vspace*{-3mm}
+	\item $\mathbb{I}_Q$ is an indicator variable equalling $1$ if there is a quarantine policy and $0$ if there is no quarantine policy
+	\vspace*{-3mm}
+	\item $P_\text{sympt}$ is the probability that an infected individual is symptomatic
+	\vspace*{-3mm}
+	\item $\gamma$ and $\gamma_Q$ are the average rates [$1/(\text{average recovery duration})$] of recovery for infected individuals and individuals who just came out of quarantine respectively
+	\vspace*{-3mm}
+	\item $\kappa$ is the average rate [$1/(\text{average quarantine duration})$] at which we take people out of quarantine
+\end{itemize}
+The \verb`MATLAB` code uses Euler's method with time steps of size \verb`k = 0.001` to simulate the dynamics of these groups over $90$ days from an initial condition of $1\%$ infected and everyone else susceptible. Parameters mentioned to be randomized in Section~\ref{section2} were done so using the built in functions \verb`randn()` and \verb`rng(404)` for reproducibility. The response was measured as \verb`load = max(i + q)`.
 
-\section{Discussion of simulation}
+\section{Description of data}\label{appendixB}
+Description goes here
 
-\section{Description of data}
+\section{Tables and figures}\label{appendixC}
 
-\section{Tables and figures}
+% table 1
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l l l}\hline
+         Factor &  Levels & Symbol \\ \hline\hline
+         Isolation & Low (0), Medium (0.5), High (1) & \verb`soc.iso` \\ \hline
+         Vaccination rate & 0 \si{ppd}, 1 \si{ppd}, 2 \si{ppd} & \verb`vac.rate` \\ \hline
+         Quarantine duration & 0 days, 7 days, 14 days & \verb`quar.dur`\\ \hline
+         Average number of daily interactions & 15 \si{ipd}, 30 \si{ipd}, 45 \si{ipd} & \verb`num.daily` \\ \hline \\
+    \end{tabular}
+    \caption{\si{ppd} is ``percent population vaccinated per day'' and \si{ipd} is ``average number of daily interactions per day''}
+    \label{tab:factor_summary}
+\end{table}
 
-Tables should be numbered Table 1, Table 2, etc. and referred
-to by number in the text where they are discussed. They should have self-explanatory
-captions. Similarly figures. Tables and figures can be collected together at the end of the
-report just to make it easier to check that the text meets the 5-page limit.
-
-Use the actual response name, factor names, and levels in tables and figures (e.g., levels
-2m and 3m, not -1 and 1). Similarly, figures should have the axes clearly labelled with
-actual names.
-
-If more than one line is drawn on a plot, there should be a caption describing the lines
-(usually using the actual names of the levels of a factor).
-
+% figure 2
 \begin{figure}[H]
-\includegraphics[width=\linewidth]{soc-iso:vac-rate_interaction_plot.pdf}
-\caption{Interaction plot}	 % make better captions
-\label{soc.iso:vac.rate_interaction}
+	\includegraphics[width=\linewidth]{soc-iso:vac-rate_interaction_plot.pdf}
+	\caption{Interaction plot}	 % make better captions
+	\label{fig:soc.iso:vac.rate_interaction}
 \end{figure}
+
 
 
 
