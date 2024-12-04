@@ -28,7 +28,7 @@ end
 
 M = [load', Av, Bv, Cv, Dv];
 Labels = ["peak.inf", "soc.iso", "rate.vac", "quar.dur", "num.daily"];
-writetable(array2table(M, 'VariableNames', Labels), 'pandemic.csv')
+writetable(array2table(M, 'VariableNames', Labels), 'pandemic_data.csv')
 
 
 function load = pandemic(num_daily, isolation, prob_spread, recovery_rate, vac_rate, vac_eff, prob_sympt, quar_dur)
