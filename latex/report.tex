@@ -65,12 +65,12 @@
 \titleformat{\section} % Redefine section numbering format
   {\normalfont\Large\bfseries}{\thesection.}{1em}{}
   
-% Customize line numbering format to right-align line numbers
-\usepackage{lineno} % Add the lineno package
-\renewcommand\linenumberfont{\normalfont\scriptsize\sffamily\color{blue}}
-\rightlinenumbers % Right-align line numbers
-
-\linenumbers % Enable line numbering
+%% Customize line numbering format to right-align line numbers
+%\usepackage{lineno} % Add the lineno package
+%\renewcommand\linenumberfont{\normalfont\scriptsize\sffamily\color{blue}}
+%\rightlinenumbers % Right-align line numbers
+%
+%\linenumbers % Enable line numbering
 
 % Define a new command for the fourth-level title.
 \newcommand{\subsubsubsection}[1]{%
@@ -114,7 +114,7 @@
 \maketitle
 
 \begin{abstract}
-In light of the COVID-19 pandemic, understanding the impact of public health interventions on epidemic spread has become crucial for managing future outbreaks. A common framework for pandemic modelling is the SIR (Susceptible/Infected/Recovered) model which uses differential equations to model disease spread. There are numerous extensions of this model that add more groups (such as SIVQR -- Susceptible/Infected/Vaccinated/Quarantined/Recovered), and there innumerable different policy interventions/characteristics one can consider in the model. This report aims to determine which policy measures are most important in managing disease spread.
+In light of the COVID-19 pandemic, understanding the impact of public health interventions on epidemic spread has become crucial for managing future outbreaks. A common framework for pandemic modelling is the SIR (Susceptible/Infected/Recovered) model which uses differential equations to model disease spread. There are many extensions of this model that add more groups (such as SIVQR -- Susceptible/Infected/Vaccinated/Quarantined/Recovered), and there are innumerable different policy interventions/characteristics of the disease one can consider in the model. This report aims to determine which policy measures are most important in managing disease spread.
 \end{abstract} 
 
 %-------------------------------------------
@@ -122,50 +122,65 @@ In light of the COVID-19 pandemic, understanding the impact of public health int
 %-------------------------------------------
 \section{Introduction}\label{section1}
 
-You need to say enough to understand the problem and objectives and a
-quick guide to your approach. At the end of the introduction, give a brief outline of what
-the following sections will cover, e.g., ``The rest of the report is as follows. Details of the
-experimental design will be given in Section 2, . . .''
-Probably we will cite here
-\cite{TURKYILMAZOGLU2022127429} % this is how to add the citation
+%You need to say enough to understand the problem and objectives and a
+%quick guide to your approach. At the end of the introduction, give a brief outline of what
+%the following sections will cover, e.g., ``The rest of the report is as follows. Details of the
+%experimental design will be given in Section 2, . . .''
+%Probably we will cite here
+
+The question of interest is determining which policy levers are the most effective at managing disease spread during an outbreak. Some examples of policy levers are a quarantine policy for infected individuals, blanket social distancing measures, mask mandates, vaccine programs, etc. Expanding on the model presented in \cite{TURKYILMAZOGLU2022127429}, we will simulate the evolution of a pandemic under various scenarios. 
+
+To measure how effective a particular strategy is, we would like to look at the resulting load on the healthcare system. This depends on how many people get sick, what kinds of people are getting sick (is it mostly elderly or healthy young people?), how long they are sick for. If at any point the load is too high for the healthcare system to handle, people will be left without treatment and potentially die. Thus we aim to keep the maximum load over the entire period as low as possible, i.e. we want to ``flatten the curve''.
+
+In practice, we don't have a way of directly measuring the load. A good proxy however, is the total number of people who are sick. Which in our model includes those who are infectious and the infectious people who have been put in quarantine.
 
 \section{The experimental design}\label{section2}
 
 In the \verb`MATLAB` code there are eight parameters of interest that we can tune. They are in no particular order:  \verb`prob_spread`, \verb`recovery_rate`, \verb`vac_eff`, \verb`prob_sympt`,  \verb`isolation`,  \verb`vac_rate`, \verb`quar_dur`, \verb`num_daily`.
 
-These represent (respectively) the probability that an unvaccinated individual will catch the disease from a single interaction with an infectious individual, the average rate of recovery for an infected individual in days, the proportional effectiveness of the vaccine (for example 0.1 means that vaccinated individuals are 10\% as likely to get infected compared to if they were unvaccinated), the probability that an infected individual shows symptoms, the rate at which the susceptible population is vaccinated in days, the duration that symptomatic individuals are quarantined in days, the average number of daily interactions that an individual has per day. 
+These represent (respectively) the probability that an unvaccinated individual will catch the disease from a single interaction with an infectious individual, the average rate of recovery for an infected individual in days, the proportional effectiveness of the vaccine (for example 0.1 means that vaccinated individuals are 10\% as likely to get infected compared to if they were unvaccinated), the probability that an infected individual shows symptoms, ISOLATION?, the rate at which the susceptible population is vaccinated in days, the duration that symptomatic individuals are quarantined in days, the average number of daily interactions that an individual has per day. 
 
-The first of four of these parameters were randomized in simulation for each observation. This choice was made to reduce the number of effective runs, and because these parameters would be hard (or potentially impossible) to measure in the real world. More detail is given in Appendix~\ref{appendixA}. The last four of these parameters were considered as treatments and their levels were thus pre-designed and recorded. 
-
-The response of interest is \underline{\phantom{aaaa}}. A complete description of the data is contained in Appendix~\ref{appendixB}
+The first of four of these parameters were randomized in simulation for each observation. This choice was made to reduce the number of effective runs, and because these parameters would be hard (or potentially impossible) to measure in the real world. More detail is given in Appendix~\ref{appendixA}. The last four of these parameters were considered as treatment/blocking factors and their levels were thus pre-designed and recorded. 
 
 For a summary of the experimental factors, see Table~\ref{tab:factor_summary}. These levels were chosen based on \underline{\phantom{aaaa}}. 
 
-The design is a full $3^4$ factorial and our model is
-\vspace*{-5mm}
+The response of interest is \underline{\phantom{aaaa}}. A complete description of the data is contained in Appendix~\ref{appendixB}
+
+The design is a full $3^4$ factorial and the model is
+\vspace*{-3mm}
 \begin{align*}
 	Y_{ijk\ell}=\mu+\alpha_i+\nu_j+\kappa_k+\eta_\ell+(\alpha\nu)_{ij}+(\alpha\kappa)_{ik}+(\alpha\eta)_{i\ell}+(\nu\kappa)_{jk}+(\nu\eta)_{j\ell} + (\kappa\eta)_{k\ell}\\
 	+(\alpha\nu\kappa)_{ijk}+(\alpha\nu\eta)_{ij\ell}+(\alpha\kappa\eta)_{ik\ell} + (\nu\kappa\eta)_{jk\ell} + (\alpha\nu\kappa\eta)_{ijk\ell}+E_{ijk\ell}
 \end{align*}
-where $i,j,k,\ell=1,2,3$ and:
+\vspace*{-10mm}
+
+where $i,j,k,\ell\in\{1,2,3\}$ and:
+
 \vspace*{-3mm}
-\begin{itemize}
-	\item $\mu$ is a main effect common to all observations
-	\vspace*{-3mm}
-	\item $\alpha_i$ is the effect on \verb`load` of \verb`soc.iso` at level $i$
-	\vspace*{-3mm}
-	\item $\nu_j$ is the effect on \verb`load` of \verb`vac.rate` at level $j$
-	\vspace*{-3mm}
-	\item $\kappa_k$ is the effect on \verb`load` of \verb`quar.dur` at level $k$
-	\vspace*{-3mm}
-	\item $\eta_\ell$ is the effect on \verb`load` of \verb`num.daily` at level $\ell$
-	\vspace*{-3mm}
-	\item $(\alpha\nu)_{ij}$ is the ``interaction effect'' on \verb`load` of \verb`soc.iso` and \verb`vac.rate` at levels $i,j$
-	\vspace*{-3mm}
-	\item and similarly for other higher order effects
-	\vspace*{-3mm}
-	\item $E_{ijk\ell}\sim\mathcal{N}(0,\sigma^2)$
-\end{itemize}
+\begin{center}
+    \begin{minipage}{0.8\textwidth}
+		\begin{itemize}
+			\item $\mu$ is an effect common to all observations
+			\vspace*{-3mm}
+			\item $\alpha_i$ is the effect on \verb`load` of \verb`soc.iso` at level $i$
+			\vspace*{-3mm}
+			\item $\nu_j$ is the effect on \verb`load` of \verb`vac.rate` at level $j$
+			\vspace*{-3mm}
+			\item $\kappa_k$ is the effect on \verb`load` of \verb`quar.dur` at level $k$
+			\vspace*{-3mm}
+			\item $\eta_\ell$ is the effect on \verb`load` of \verb`num.daily` at level $\ell$
+			\vspace*{-3mm}
+			\item $(\alpha\nu)_{ij}$ is the ``interaction effect'' on \verb`load` of \verb`soc.iso` and \verb`vac.rate` at levels $i,j$
+			\vspace*{-3mm}
+			\item and similarly for other higher order effects
+			\vspace*{-3mm}
+			\item $E_{ijk\ell}\sim\mathcal{N}(0,\sigma^2)$ is the residual error at levels $i,j,k\ell$
+			\vspace*{-3mm}
+			\item And finally $Y_{ijk\ell}$ is the recorded value of \verb`load` at level $i,j,k,\ell$
+		\end{itemize}
+	\end{minipage}
+\end{center}
+
 
 
 %\begin{table}[H]
