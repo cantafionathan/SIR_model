@@ -13,7 +13,7 @@ library(dplyr)
 ```
 
 ```{r}
-data <- read.csv("pandemic.csv")
+data <- read.csv("pandemic_data.csv")
 head(data)
 summary(data)
 # peak.inf is i+q

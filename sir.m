@@ -21,7 +21,7 @@ base_num_inter = 20;
 
 % social isolation policy ranging from zero isolation to total isolation
 % reduces number of daily interactions
-isolation_factor = 0.5; 
+isolation_factor = 0; 
 
 % average number of daily interactions
 daily_interactions = base_num_inter*(1-isolation_factor); 
@@ -50,7 +50,7 @@ prob_symptomatic = 1; % covid
 % should always be set to 1, if no quarantine set quarantine duration to 0
 quarantine = 1; 
 
-qd = 14;
+qd = 3;
 quarantine_duration = min(qd, 1/gamma); % 5 days or recovery
 % rate at which we take people out of quarantine
 if quarantine_duration == 0

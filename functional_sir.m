@@ -2,13 +2,18 @@
 % Turkyilmazoglu M. An extended epidemic model with vaccination: Weak-immune SIRVI. 
 % Physica A. 2022;598:127429. doi:10.1016/j.physa.2022.127429
 
+rng(404);
+
+
 %-----MODEL-----%
 
-% 4 x 4 x 4 x 4 factorial. 
-isolation = [0, 0.27, 0.4, 0.81];
-vac_rate = [0, 0.003, 0.006, 0.009];
-quar_dur = [0, 8, 16, 24];
-num_daily = [10, 20, 30, 40];
+% 3^4 factorial. 
+isolation = [0, 0.5, 1]; % describe what "Isolation" means in the model - low, medium, high
+vac_rate = [0, 0.01, 0.02]; % based on historical data of percentage of population vaccinated per day, 
+% the absolute most was china who managed 1.57% per day, with current
+% knowledge we think countries could certainly get this up to 2% per day if needed
+quar_dur = [0, 7, 14]; % based on the fact that 14 day quarantine was recommended 
+num_daily = [15, 30, 45]; % this seems like a reasonable average number for low, middle, and high density populations
 
 [A, B, C, D] = ndgrid(isolation, vac_rate, quar_dur, num_daily);
 Av = A(:);
@@ -50,7 +55,7 @@ function load = pandemic(num_daily, isolation, prob_spread, recovery_rate, vac_r
     
     % social isolation policy ranging from zero isolation to total isolation
     % reduces number of daily interactions
-    isolation_factor = isolation; 
+    isolation_factor = 0.9*isolation; % note the factor of 0.9
     
     % average number of daily interactions
     daily_interactions = base_num_inter.*(1-isolation_factor); 
