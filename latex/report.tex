@@ -105,14 +105,74 @@ Abstracts must be able to stand alone and so cannot contain citations to the pap
 %-------------------------------------------
 \section{Introduction}
 
+You need to say enough to understand the problem and objectives and a
+quick guide to your approach. At the end of the introduction, give a brief outline of what
+the following sections will cover, e.g., ``The rest of the report is as follows. Details of the
+experimental design will be given in Section 2, . . .''
+Probably we will cite here
 \cite{TURKYILMAZOGLU2022127429} % this is how to add the citation
 
 \section{The experimental design}
+Give enough details about the factors and the
+response (give units). Rather than numerous sentences, it will be easier for the reader
+to see at a glance the factors and their levels by constructing a table with the name, a
+brief description, and the levels of each factor. In the text, refer the reader to the table.
+You have seen many such tables in worksheets, for example. The text can then focus on
+anything unusual that needs explanation and the considerations leading to the choice of
+factors and their levels.
+
+Describe the experimental plan (e.g., a fractional factorial with 5 factors and 8 runs). If
+necessary, explain how the design was constructed, e.g., the aliasing structure you chose.
+
+Describe any blocking factors and the randomization. Here it is best to err on the side of
+plenty of detail. 11The experiment was randomized,'' is not convincing. If you randomized
+the run order, say, then also give the actual run order in then data table. Exercise 7.7,
+based on a real example, is a good illustration.
+
 \section{Analysis}
+
+Try to be specific about your findings, and present numerical
+estimated effects, recommended levels, the estimated response at the recommended levels,
+etc. ``The high level of temperature was better at the 5\% significance level'' does not
+summarize well: the reader would have to make some more calculations to assess whether
+the result is practically significant. Instead, ``We are 95\% confident that the effect of
+changing temperature from 15 to 25°C is an increase in mean (a response variable) of (a
+confidence interval)'' tells the reader immediately whether there is a result of concern.
+
+If interaction effects are reported you should be careful to interpret them. Numerical
+estimates of interaction effects are not easy to understand. Rather, refer to a table of
+averages or an interaction plot. Talk about how the estimated effect of one factor depends
+on the level of another.
+
+Do not give excessive digits for estimates, etc. Two significant digits are usually suﬀicient
+for a standard error. Give the corresponding estimate to the same accuracy, e.g., 14.37 kg
+with standard error 0.54 kg, 14.4 kg with standard error 5.4 kg, or 14 kg with standard
+error 54 kg. Always give units of measurement for estimates and standard errors.
+
+If a transformation has been applied you will often want to convert predictions on the
+transformed scale back to the original scale.
 
 \section{Conclusions}
 
+The conclusions are often essentially a summary of the
+important results.
+
+Evaluate what you did. What would you do differently next time if a similar experiment
+were conducted?
+
 \section{Tables and figures}
+
+Tables should be numbered Table 1, Table 2, etc. and referred
+to by number in the text where they are discussed. They should have self-explanatory
+captions. Similarly figures. Tables and figures can be collected together at the end of the
+report just to make it easier to check that the text meets the 5-page limit.
+
+Use the actual response name, factor names, and levels in tables and figures (e.g., levels
+2m and 3m, not -1 and 1). Similarly, figures should have the axes clearly labelled with
+actual names.
+
+If more than one line is drawn on a plot, there should be a caption describing the lines
+(usually using the actual names of the levels of a factor).
 
 \begin{figure}[H]
 \includegraphics[width=\linewidth]{soc-iso:vac-rate_interaction_plot.pdf}
@@ -152,7 +212,14 @@ Abstracts must be able to stand alone and so cannot contain citations to the pap
 
 \section*{Appendix}
 %--- Section ---%
+
+Include an appendix with a clear description of all variables. Upload
+the data and all R code as well as your report to canvas.ubc.ca. Please ensure the file
+names include data, R-code and report, respectively, so that it is clear what is in each
+file.
+
 \section{Discussion of simulation}
+
 \section{Description of data}
 
 
