@@ -4,64 +4,19 @@
 
 %-----MODEL-----%
 
-% 4 x 4 x 4 x 4 factorial. Can try to use generator table on the 4 level
-% factors to reduce number of runs
-
-% Consider as a 2^8 factorial with factors 
-% A = isolation factor; pseudo-factors with 2 levels A1, A2
-% B = vaccination rate; pseudo-factors with 2 levels B1, B2
-% C = quarantine duration; pseudo-factors with 2 levels C1, C2
-% D = # daily interactions; pseudo-factors with 2 levels D1, D2
-%
-% Reduce number of runs from 256 to 64 by using generators 
-% D1 = A1A2B1B2; D2 = A1A2C1C2 this is a resolution 5 design
-% so 2-way interactions will aliased with at worst 3 way interactions and
-% we can still estimate those effects (which we need to since A1A2, etc.
-% are like main effects)
-
-% use generators to determine levels of num_daily
-
-L = {[1, -1], [1, -1], [1, -1], [1, -1], [1, -1], [1, -1]};
-n = length(L);
-[L{:}] = ndgrid(L{end:-1:1});
-L = cat(n+1,L{:});
-L = fliplr(reshape(L,[],n));
-
-A1 = L(1:end, 1); % 1
-A2 = L(1:end, 2); % 3
-B1 = L(1:end, 3); % 2
-B2 = L(1:end, 4); % 5
-C1 = L(1:end, 5); % 4
-C2 = L(1:end, 6); % 6
-D1 = A1.*B1.*A2.*C1; % 7 = 1234
-D2 = A1.*B1.*B2.*C2; % 8 = 1256
-
-% compute levels of all the factors that aren't random
-
+% 4 x 4 x 4 x 4 factorial. 
 isolation = [0, 0.27, 0.4, 0.81];
 vac_rate = [0, 0.003, 0.006, 0.009];
 quar_dur = [0, 8, 16, 24];
 num_daily = [10, 20, 30, 40];
 
-[A, B, C] = ndgrid(isolation, vac_rate, quar_dur);
+[A, B, C, D] = ndgrid(isolation, vac_rate, quar_dur, num_daily);
 Av = A(:);
 Bv = B(:);
 Cv = C(:);
+Dv = D(:);
 
-Dv = zeros(length(L), 1);
-for i = 1:length(L)
-    if (D1(i) == 1) && (D2(i) == 1)
-        Dv(i) = num_daily(1);
-    elseif (D1(i) == 1) && (D2(i) == -1)
-        Dv(i) = num_daily(2);
-    elseif (D1(i) == -1) && (D2(i) == 1)
-        Dv(i) = num_daily(3);
-    else
-        Dv(i) = num_daily(4);
-    end
-end
-
-for i = 1:length(L)
+for i = 1:length(Av)
     % randomly generated levels
     prob_spread = 0.1*rand(1)+0.05; % random number between (0.05, 0.15)
     recovery_rate = 1/(14*rand(1) + 7); % random number between (1/7, 1/21)
@@ -71,56 +26,9 @@ for i = 1:length(L)
     load(i) = pandemic(Dv(i), Av(i), prob_spread, recovery_rate, Bv(i), vac_eff, prob_sympt, Cv(i));
 end
 
-M = [load, Av, Bv, Cv, Dv];
-Labels = ["peak_infected", "social_isolation", "rate_vaccinated", "quarantine_duration", "daily_interactions"];
-writetable(array2table(M, 'VariableNames', Labels), 'fractional_pandemic.csv')
-
-% num_daily = [10, 20, 30, 40]; % 4 level factor
-% isolation = [0, 0.3, 0.6, 0.9]; % 4 level factor
-% prob_spread = [0.05, 0.1, 0.15]; % consider randomizing and not recording
-% recovery_rate = [1/7, 1/14, 1/21]; % consider randomizing and not recording
-% vac_rate = [0, 0.003, 0.006, 0.009]; % 4 level factor
-% vac_eff = [0, 0.005, 0.01, 0.015, 0.02]; % consider randomizing and not recording
-% prob_sympt = [0, 0.2, 0.4, 0.6]; % consider randomizing and not recording
-% quar_dur = [0, 8, 16, 24]; % 4 level factor
-
-% % [A, B, C, D, E, F, G, H] = ndgrid(num_daily, isolation, prob_spread, recovery_rate, vac_rate, vac_eff, prob_sympt, quar_dur);
-% % Av = A(:);
-% % Bv = B(:);
-% % Cv = C(:);
-% % Dv = D(:);
-% % Ev = E(:);
-% % Fv = F(:);
-% % Gv = G(:);
-% % Hv = H(:);
-% %
-% % load = zeros(length(Av), 1);
-% % for i = 1:length(Av)
-% %     load(i) = pandemic(Av(i), Bv(i), Cv(i), Dv(i), Ev(i), Fv(i), Gv(i), Hv(i));
-% % end
-% %
-% % M = [load, Av, Bv, Cv, 1./Dv, Ev, Fv, Gv, Hv];
-% % Labels = ["peak_infected", "pop_density", "social_isolation", "prob_spread", "recovery_duration", "rate_vaccinated", "vaccine_effectivness", "prob_symptomatic", "quarantine_duration"];
-% % writetable(array2table(M, 'VariableNames', Labels), 'pandemic.csv')
-
-% [A, B, C] = ndgrid(isolation, vac_rate, quar_dur);
-% Av = A(:);
-% Bv = B(:);
-% Cv = C(:);
-% 
-% load = zeros(length(Av), 1);
-% for i = 1:length(Av)
-%     num_daily = round(25*rand(1)+5); % random number between (5, 30) % CONSIDER NOT RANDOMIZING
-%     prob_spread = 0.1*rand(1)+0.05; % random number between (0.05, 0.15)
-%     recovery_rate = 1/(14*rand(1) + 7); % random number between (1/7, 1/21)
-%     vac_eff = 0.2*rand(1) + 0.4; % random number between (0.4, 0.6)
-%     prob_sympt = 0.6*rand(1); % random number between (0, 0.6)
-%     load(i) = pandemic(num_daily, Av(i), prob_spread, recovery_rate, Bv(i), vac_eff, prob_sympt, Cv(i));
-% end
-% 
-% M = [load, Av, Bv, Cv];
-% Labels = ["peak_infected", "social_isolation", "rate_vaccinated", "quarantine_duration"];
-% writetable(array2table(M, 'VariableNames', Labels), 'reduced_pandemic.csv')
+M = [load', Av, Bv, Cv, Dv];
+Labels = ["peak.inf", "soc.iso", "rate.vac", "quar.dur", "num.daily"];
+writetable(array2table(M, 'VariableNames', Labels), 'pandemic.csv')
 
 
 function load = pandemic(num_daily, isolation, prob_spread, recovery_rate, vac_rate, vac_eff, prob_sympt, quar_dur)
