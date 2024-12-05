@@ -147,3 +147,25 @@ dev.off()
 aggregated_results <- aggregate(peak.inf ~ soc.iso + rate.vac + quar.dur + num.daily, data = data, mean)
 optimal_combination <- aggregated_results[which.min(aggregated_results$peak.inf), ]
 optimal_combination
+
+# Treatment Contrasts
+data$soc.iso <- as.factor(data$soc.iso)
+data$rate.vac <- as.factor(data$rate.vac)
+data$quar.dur <- as.factor(data$quar.dur)
+data$num.daily <- as.factor(data$num.daily)
+head(data)
+
+contrasts(data$soc.iso) <- contr.treatment(levels(data$soc.iso), base = 1) 
+contrasts(data$rate.vac) <- contr.treatment(levels(data$rate.vac), base = 1) 
+contrasts(data$quar.dur) <- contr.treatment(levels(data$quar.dur), base = 1) 
+contrasts(data$num.daily) <- contr.treatment(levels(data$num.daily), base = 1) 
+
+# Fit linear model with treatment contrasts
+lm_treatment <- lm(peak.inf ~ soc.iso + rate.vac + quar.dur + num.daily, data = data)
+summary(lm_treatment)
+
+confint(lm_treatment, level = 0.95)
+coef_lm <- coef(lm_treatment)
+coef_lm
+confint_lm <- confint(lm_treatment)
+confint_lm
