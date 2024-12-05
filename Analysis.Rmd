@@ -152,10 +152,6 @@ optimal_levels <- aggregated_results %>%
   slice_min(load, n = 1, with_ties = FALSE)
 print(optimal_levels)
 
-# For the most optimal combination of all factors levels, we somehow see 7 day quarantine
-# producing least load (less than 14 day quarantine)
-# 1	0.02	14	15	0.01031777
-# 1	0.02	7	15	0.01001565
 optimal_combination <- aggregated_results[which.min(aggregated_results$load), ]
 optimal_combination
 
@@ -182,6 +178,22 @@ coef_lm <- coef(lm_treatment)
 coef_lm
 confint_lm <- confint(lm_treatment)
 confint_lm
+
+
+
+# Polynomial Contrasts
+data$soc.iso <- ordered(data$soc.iso)
+data$rate.vac <- ordered(data$rate.vac)
+data$quar.dur <- ordered(data$quar.dur)
+data$num.daily <- ordered(data$num.daily)
+contrasts(data$soc.iso) <- contr.poly(levels(data$soc.iso))
+contrasts(data$rate.vac) <- contr.poly(levels(data$rate.vac))
+contrasts(data$quar.dur) <- contr.poly(levels(data$quar.dur))
+contrasts(data$num.daily) <- contr.poly(levels(data$num.daily))
+lm_poly <- lm(load ~ soc.iso + rate.vac + quar.dur + num.daily, data = data)
+summary(lm_poly)
+
+anova(lm_poly)
 
 
 
