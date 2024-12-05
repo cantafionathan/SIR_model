@@ -178,7 +178,7 @@ We evaluated the optimal levels of factors according to model predictions for ea
 	\item \verb`num.daily`$=30$: The optimal policy combination recommends strict social isolation (\verb`soc.iso`$=1$), a moderate vaccination rate (\verb`rate.vac`$= 0.01$), and a 7-day quarantine. This combination results in a \verb`load` of 0.014.
 	\item \verb`num.daily`$= 45$: The optimal policy combination recommends strict social isolation (\verb`soc.iso`$= 1$), a moderate vaccination rate (\verb`rate.vac`$=0.01$), and a 14-day quarantine. This combination results in a \verb`load` of 0.027.
 \end{itemize}
-Note that the level of \verb`vac.rate` may not be too important and could be ignored.
+Note that based on the contrasts, \verb`vac.rate` may not be crucial and could be ignored.
 
 
 
@@ -240,7 +240,7 @@ where
 The \verb`MATLAB` code uses Euler's method with time steps of size \verb`k = 0.001` to simulate the dynamics of these groups up to \verb`Tf = 90` days from an initial condition of $1\%$ infected and everyone else susceptible. Parameters mentioned to be randomized in Section~\ref{section2} were done so using the built in functions \verb`randn()`. The range of possible values are shown in Table~\ref{tab:randomization_summary}. The response was measured as \verb`load = max(i + q)`.
 
 \section{Description of data}\label{appendixB}
-Explain all variables...
+The dataset is derived from the simulated outcomes of our pandemic simulation model, with rows corresponding to different combinations of policy factors. It was generated using a factorial design to explore the effects of social isolation (\verb'soc.iso'), vaccination rate (\verb'rate.vac'), quarantine duration (\verb'quar.dur'), and daily interactions (\verb'num.daily') on the burden on health care resources (\verb'load').
 
 \section{Tables and figures}\label{appendixC}
 

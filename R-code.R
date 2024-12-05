@@ -105,5 +105,3 @@ coef_lm <- coef(lm_treatment)
 coef_lm
 confint_lm <- confint(lm_treatment)
 confint_lm
-
-
