@@ -162,7 +162,7 @@ where $i,j,k,\ell\in\{1,2,3\}$ and a full description of the terms is contained 
 
 We begin by verifying the model assumptions. Looking at the Box-Cox plot in Figure~\ref{fig:boxcox} we see that no transformation of the data is reasonable. Furthermore the  residual plot [Figure~\ref{fig:residuals}], and quantile plot [Figure~\ref{fig:qqplot}] show that assumptions about the error and form of our model are reasonable.
 
-Referring to Table~\ref{tab:anova} none of the higher order effects are statistically significant, so with that in mind the remainder of this report will only consider main effects. Of these primary factors, \verb`soc.iso`, \verb`quar.dur`, and \verb`num.daily` all have statistically significant effects on \verb`load` at the $0.1\%$ level. While \verb`rate.vac` is only significant at the $10\%$ level.
+None of the higher order effects were statistically significant at the $5\%$ level. Referring to Table~\ref{tab:anova}, \verb`soc.iso`, \verb`quar.dur`, and \verb`num.daily` all have statistically significant effects on \verb`load` at the $0.1\%$ level. While \verb`rate.vac` is only significant at the $10\%$ level.
 
 From the Figure~\ref{fig:boxplot_soc.iso} we see there is a large reduction in \verb`load` when changing \verb`soc.iso` from levels 0 or 0.5 to level 1. This indicates that when it comes to social distancing policies, half measures are not nearly as effective in terms of minimizing \verb`load`. This is supported by the contrasts provided in Table~\ref{tab:contrasts}
 
@@ -299,6 +299,38 @@ Explain all variables...
 	\caption{A description of terms in the model equation}
 	\label{tab:model_equation}
 \end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l l l l l}\hline
+		& Df & Mean Sq & F value &  Pr(>F)    \\\hline\hline
+		\verb'soc.iso' & 1 &  5.19 & 208.37 & < 2e-16 \\\hline
+		\verb'rate.vac' & 1 & 0.081 & 3.27 & 0.075 \\\hline
+		\verb'quar.dur' & 1 & 0.40 & 16.00 & 0.00017 \\\hline
+		\verb'num.daily' & 1 & 0.89 & 35.73 & 1.06e-07 \\\hline\\
+	\end{tabular}
+	\caption{ANOVA table for main effects only}
+	\label{tab:anova}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l l l l l}\hline
+		& Estimate & Pr(>|t|) & 2.5\% & 97.5\%	\\\hline\hline
+		\verb`soc.iso0:0.5` & -0.13 & 0.00041 & -0.19 & -0.058 \\\hline
+		\verb`soc.iso0:1` & -0.62  & < 2e-16   &  -0.69  & -0.55 \\\hline
+		\verb`rate.vac0:0.01` & -0.065  & 0.060 	& -0.13  & 0.0027\\\hline
+		\verb`rate.vac0:0.02` & -0.078  &  0.026 	& -0.15 & -0.0095 \\\hline
+		\verb`quar.dur0:7` &  -0.042  &  0.22  &  -0.11 & 0.026 \\\hline
+		\verb`quar.dur0:14` &  -0.17  &  3.59e-06 	&  -0.24 & -0.10\\\hline
+		\verb`num.daily15:30` &   0.17 &  2.89e-06 & 	0.11 & 0.24\\\hline
+		\verb`num.daily15:45` &  0.26  &  1.28e-10 & 	0.19 & 0.32\\\hline\\
+	\end{tabular}
+	\caption{Contrasts}
+	\label{tab:contrasts}
+\end{table}
+
+
 
 % FIGURES
 \begin{figure}[H]
