@@ -15,18 +15,18 @@ library(dplyr)
 ```{r}
 data <- read.csv("pandemic_data.csv")
 head(data)
-summary(data) # peak.inf is i+q
+summary(data) # load is i+q
 
 
 
 # Anova
-anova_model <- aov(peak.inf ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
+anova_model <- aov(load ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
 summary(anova_model)
 
 
 
 # Regression and Box-Cox
-lm_model <- lm(peak.inf ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
+lm_model <- lm(load ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
 summary(lm_model)
 confint(lm_model, level = 0.95)
 
@@ -56,7 +56,7 @@ qqline(lm_model$residuals)
 interaction.plot(
   x.factor = data$soc.iso,
   trace.factor = data$rate.vac,
-  response = data$peak.inf,
+  response = data$load,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Social Isolation x Vaccination Rate",
@@ -67,7 +67,7 @@ interaction.plot(
 interaction.plot(
   x.factor = data$soc.iso,
   trace.factor = data$quar.dur,
-  response = data$peak.inf,
+  response = data$load,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Social Isolation x Quarantine Duration",
@@ -78,7 +78,7 @@ interaction.plot(
 interaction.plot(
   x.factor = data$soc.iso,
   trace.factor = data$num.daily,
-  response = data$peak.inf,
+  response = data$load,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Social Isolation x Daily Interactions",
@@ -89,7 +89,7 @@ interaction.plot(
 interaction.plot(
   x.factor = data$rate.vac,
   trace.factor = data$quar.dur,
-  response = data$peak.inf,
+  response = data$load,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Vaccination Rate x Quarantine Duration",
@@ -100,7 +100,7 @@ interaction.plot(
 interaction.plot(
   x.factor = data$rate.vac,
   trace.factor = data$num.daily,
-  response = data$peak.inf,
+  response = data$load,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Vaccination Rate x Daily Interactions",
@@ -111,7 +111,7 @@ interaction.plot(
 interaction.plot(
   x.factor = data$quar.dur,
   trace.factor = data$num.daily,
-  response = data$peak.inf,
+  response = data$load,
   col = 1:4,
   lty = 1,
   main = "Interaction Plot: Quarantine Duration x Daily Interactions",
@@ -121,43 +121,57 @@ interaction.plot(
 )
 
 # Boxplots
-ggplot(data, aes(x = as.factor(soc.iso), y = peak.inf)) +
+ggplot(data, aes(x = as.factor(soc.iso), y = load)) +
   geom_boxplot() +
   labs(title = "Effect of Social Isolation on Peak Infected", 
        x = "Social Isolation Level", y = "Peak Infected")
 
-ggplot(data, aes(x = as.factor(rate.vac), y = peak.inf)) +
+ggplot(data, aes(x = as.factor(rate.vac), y = load)) +
   geom_boxplot() +
   labs(title = "Effect of Vaccination Rate on Peak Infected", 
        x = "Vaccination Rate", y = "Peak Infected")
 
-ggplot(data, aes(x = as.factor(quar.dur), y = peak.inf)) +
+ggplot(data, aes(x = as.factor(quar.dur), y = load)) +
   geom_boxplot() +
   labs(title = "Effect of Quarantine Duration on Peak Infected",
     x = "Quarantine Duration (Days)", y = "Peak Infected")
 
-ggplot(data, aes(x = as.factor(num.daily), y = peak.inf)) +
+ggplot(data, aes(x = as.factor(num.daily), y = load)) +
   geom_boxplot() +
   labs(title = "Effect of Daily Interactions on Peak Infected",
     x = "Daily Interactions", y = "Peak Infected")
 
 
 
-#Optimal Combination
-aggregated_results <- aggregate(peak.inf ~ soc.iso + rate.vac + quar.dur + num.daily, data = data, mean)
-optimal_combination <- aggregated_results[which.min(aggregated_results$peak.inf), ]
+# Optimal Combination
+aggregated_results <- aggregate(load ~ soc.iso + rate.vac + quar.dur + num.daily, data = data, mean)
+optimal_combination <- aggregated_results[which.min(aggregated_results$load), ]
 optimal_combination
 
 
 
+# Treatment Contrasts
+data$soc.iso <- as.factor(data$soc.iso)
+data$rate.vac <- as.factor(data$rate.vac)
+data$quar.dur <- as.factor(data$quar.dur)
+data$num.daily <- as.factor(data$num.daily)
+head(data)
+
+contrasts(data$soc.iso) <- contr.treatment(levels(data$soc.iso), base = 1) 
+contrasts(data$rate.vac) <- contr.treatment(levels(data$rate.vac), base = 1) 
+contrasts(data$quar.dur) <- contr.treatment(levels(data$quar.dur), base = 1) 
+contrasts(data$num.daily) <- contr.treatment(levels(data$num.daily), base = 1) 
+
+# Fit linear model with treatment contrasts
+lm_treatment <- lm(load ~ soc.iso + rate.vac + quar.dur + num.daily, data = data)
+summary(lm_treatment)
+
+confint(lm_treatment, level = 0.95)
+coef_lm <- coef(lm_treatment)
+coef_lm
+confint_lm <- confint(lm_treatment)
+confint_lm
+
+
+
 ```
-
-
-
-
-
-
-
-
-
-

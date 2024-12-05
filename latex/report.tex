@@ -162,7 +162,17 @@ where $i,j,k,\ell\in\{1,2,3\}$ and a full description of the terms is contained 
 
 We begin by verifying the model assumptions. Looking at the Box-Cox plot in Figure~\ref{fig:boxcox} we see that no transformation of the data is reasonable. Furthermore the  residual plot [Figure~\ref{fig:residuals}], and quantile plot [Figure~\ref{fig:qqplot}] show that assumptions about the error and form of our model are reasonable.
 
-Refer to anova table and mention significant effects
+Referring to Table~\ref{tab:anova} none of the higher order effects are statistically significant, so with that in mind the remainder of this report will only consider main effects. Of these primary factors, \verb`soc.iso`, \verb`quar.dur`, and \verb`num.daily` all have statistically significant effects on \verb`load` at the $0.1\%$ level. While \verb`rate.vac` is only significant at the $10\%$ level.
+
+From the Figure~\ref{fig:boxplot_soc.iso} we see there is a large reduction in \verb`load` when changing \verb`soc.iso` from levels 0 or 0.5 to level 1. This indicates that when it comes to social distancing policies, half measures are not nearly as effective in terms of minimizing \verb`load`. This is supported by the contrasts provided in Table~\ref{tab:contrasts}
+
+box plots (contrasts?)
+
+estimated effects/slopes
+
+recommended levels and estimated load at rec levels
+
+- estimated effects, box plots, recommended levels for each level of num.daily, estimated load at those recommended levels
 	
 %Try to be specific about your findings, and present numerical
 %estimated effects, recommended levels, the estimated response at the recommended levels,
