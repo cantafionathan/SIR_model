@@ -145,6 +145,17 @@ ggplot(data, aes(x = as.factor(num.daily), y = load)) +
 
 # Optimal Combination
 aggregated_results <- aggregate(load ~ soc.iso + rate.vac + quar.dur + num.daily, data = data, mean)
+aggregated_results
+# Optimal Levels for each level of daily interaction
+optimal_levels <- aggregated_results %>%
+  group_by(num.daily) %>%
+  slice_min(load, n = 1, with_ties = FALSE)
+print(optimal_levels)
+
+# For the most optimal combination of all factors levels, we somehow see 7 day quarantine
+# producing least load (less than 14 day quarantine)
+# 1	0.02	14	15	0.01031777
+# 1	0.02	7	15	0.01001565
 optimal_combination <- aggregated_results[which.min(aggregated_results$load), ]
 optimal_combination
 
