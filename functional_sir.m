@@ -32,7 +32,7 @@ for i = 1:length(Av)
 end
 
 M = [load', Av, Bv, Cv, Dv];
-Labels = ["peak.inf", "soc.iso", "rate.vac", "quar.dur", "num.daily"];
+Labels = ["load", "soc.iso", "rate.vac", "quar.dur", "num.daily"];
 writetable(array2table(M, 'VariableNames', Labels), 'pandemic_data.csv')
 
 

@@ -162,37 +162,36 @@ where $i,j,k,\ell\in\{1,2,3\}$ and a full description of the terms is contained 
 
 We begin by verifying the model assumptions. Looking at the Box-Cox plot in Figure~\ref{fig:boxcox} we see that no transformation of the data is reasonable. Furthermore the  residual plot [Figure~\ref{fig:residuals}], and quantile plot [Figure~\ref{fig:qqplot}] show that assumptions about the error and form of our model are reasonable.
 
-Refer to anova table and mention significant effects
-	
-%Try to be specific about your findings, and present numerical
-%estimated effects, recommended levels, the estimated response at the recommended levels,
-%etc. ``The high level of temperature was better at the 5\% significance level'' does not
-%summarize well: the reader would have to make some more calculations to assess whether
-%the result is practically significant. Instead, ``We are 95\% confident that the effect of
-%changing temperature from 15 to 25°C is an increase in mean (a response variable) of (a
-%confidence interval)'' tells the reader immediately whether there is a result of concern.
-%
-%If interaction effects are reported you should be careful to interpret them. Numerical
-%estimates of interaction effects are not easy to understand. Rather, refer to a table of
-%averages or an interaction plot. Talk about how the estimated effect of one factor depends
-%on the level of another.
-%
-%Do not give excessive digits for estimates, etc. Two significant digits are usually suﬀicient
-%for a standard error. Give the corresponding estimate to the same accuracy, e.g., 14.37 kg
-%with standard error 0.54 kg, 14.4 kg with standard error 5.4 kg, or 14 kg with standard
-%error 54 kg. Always give units of measurement for estimates and standard errors.
-%
-%If a transformation has been applied you will often want to convert predictions on the
-%transformed scale back to the original scale.
+Referring to Table~\ref{tab:anova} none of the higher order effects are statistically significant, so with that in mind the remainder of this report will only consider main effects. Of these primary factors, \verb`soc.iso`, \verb`quar.dur`, and \verb`num.daily` all have statistically significant effects on \verb`load` at the $0.1\%$ level. While \verb`rate.vac` is only significant at the $10\%$ level.
+
+From Figure~\ref{fig:boxplot_soc.iso} we see there is a large reduction in \verb`load` when changing \verb`soc.iso` from levels 0 or 0.5 to level 1. This indicates that when it comes to social distancing policies, half measures are not nearly as effective in terms of minimizing \verb`load`. This is supported by the contrasts provided in Table~\ref{tab:contrasts}. We are 95\% confident that the effect of a policy that reduces the average number of daily interactions by 90\% compared to no policy (changing \verb`soc.iso` from 0 to 1) results in a decrease in mean \verb`load` of between 55\% and 69\%. And we are 95\% confident that the effect of a policy that reduces the average number of daily interactions by 45\% compared to no policy (changing \verb`soc.iso` from 0 to 0.5) results in a decrease in mean \verb`load` of between 5.8\% and 19\%. Which is a much smaller, and on the low end a very minimal difference.
+
+From Figure~\ref{fig:boxplot_vac.rate} it appears that there is little change in \verb`load` for the different levels \verb`vac.rate`. This indicates that the rate at which the population is vaccinated is not as important when it comes to minimizing \verb`load`. This is supported by the contrasts provided in Table~\ref{tab:contrasts}. Which shows 95\% confidence that changing \verb`vac.rate` from 0\% to 1\% or 0\% to 2\$ results in changes in mean \verb`load` that are close to 0.
+
+From Figure~\ref{fig:boxplot_quar.dur} we see there may be some reduction in \verb`load` when changing \verb`quar.dur` from levels 0 days or 7 days to 14 days, though the boxplot is inconclusive. Referring to Table~\ref{tab:contrasts}. We can be 95\% confident that changing \verb`quar.dur` from 0 days to 7 days results in a change in mean \verb`load` of between -0.11, and +0.026. Which is a minimal difference on the low end. Whereas we can be 95\% confident that changing \verb`quar.dur` from 0 days to 14 days results in a reduction in mean \verb`load` of between 10\% and 24\%. 
+
+From Figure~\ref{fig:boxplot_num.daily} we see there seems to be a general increase in \verb`load` when increasing  \verb`num.daily`. This is unsurprising. This is supported by the contrasts provided in Table~\ref{tab:contrasts}. We are 95\% confident that the effect of a changing \verb`num.daily` from an average of 15 interactions per day to an average of 30 interactions per day results in an increase in mean \verb`load` of between 11\% and 24\%. And that, the effect of a changing \verb`num.daily` from an average of 30 interactions per day to an average of 45 interactions per day results in an increase in mean \verb`load` of between 19\% and 32\%. This shows that increasing the average number of daily interactions (which is proxy for population density) likely increases mean \verb`load` by a fair amount.
+
+We evaluated the optimal levels of factors according to model predictions for each level of \verb`num.daily`. The results are summarized below:
+\begin{itemize}
+	\item \verb`num.daily`$=15$: The optimal policy combination recommends strict social isolation (\verb'soc.iso'$=1$), a high vaccination rate (\verb'rate.vac'$=0.02$), and a 7-day quarantine. This combination produces a \verb`load` of 0.010, which is the lowest overall \verb`load` observed in the experiment.
+	\item \verb`num.daily`$=30$: The optimal policy combination recommends strict social isolation (\verb`soc.iso`$=1$), a moderate vaccination rate (\verb`rate.vac`$= 0.01$), and a 7-day quarantine. This combination results in a \verb`load` of 0.014.
+	\item \verb`num.daily`$= 45$: The optimal policy combination recommends strict social isolation (\verb`soc.iso`$= 1$), a moderate vaccination rate (\verb`rate.vac`$=0.01$), and a 14-day quarantine. This combination results in a \verb`load` of 0.027.
+\end{itemize}
+Note that based on the contrasts, \verb`vac.rate` may not be crucial and could be ignored.
+
+
 
 \section{Conclusions}\label{section4}
+Social isolation is by far the most effective measure for reducing the peak infection load during a pandemic. Strict isolation policies, which reduce daily interactions by 90\%, provide the largest reduction in load, significantly outperforming partial measures. 
 
-Summarize results.
+A quarantine duration of 7 days appears to outperform a quarantine duration of 14 days (though based on the contrasts this is most likely due to random variation in the data). However, this does suggest that 7 day quarantine could be perfectly adequate.
 
+The rate of vaccination was seen to be much less influential on load compared to our expectations. It's possible that vaccines are more useful as a tool for preventing future outbreaks, more so than managing present ones. With that in mind, a future experiment could consider varying initial conditions with different proportions of the population initially vaccinated.
 
+Unsurprising, the population density is clearly correlated with an increased load on healthcare systems. What is good to see is that the various control measures we examined do not seem to be proportionately less effective in regions with high population density.
 
-Vaccine rates were seen to be much less influential compared to our expectations. It's possible that vaccines are more useful as a tool for preventing future outbreaks, more so than managing present ones. With that in mind, a future experiment could consider varying initial conditions with different proportions of the population initially vaccinated.
-
+It is important to note that all of the above conclusions are about the simulation, and do not necessarily directly implicate to the real world. It is our hope that the simulation reflects the true nature of the world; but there are only so many parameters considered, and assumptions about how those parameters interact. This does influence the results.
 
 
 
@@ -241,7 +240,7 @@ where
 The \verb`MATLAB` code uses Euler's method with time steps of size \verb`k = 0.001` to simulate the dynamics of these groups up to \verb`Tf = 90` days from an initial condition of $1\%$ infected and everyone else susceptible. Parameters mentioned to be randomized in Section~\ref{section2} were done so using the built in functions \verb`randn()`. The range of possible values are shown in Table~\ref{tab:randomization_summary}. The response was measured as \verb`load = max(i + q)`.
 
 \section{Description of data}\label{appendixB}
-Explain all variables...
+The dataset is derived from the simulated outcomes of our pandemic simulation model, with rows corresponding to different combinations of policy factors. It was generated using a factorial design to explore the effects of social isolation (\verb'soc.iso'), vaccination rate (\verb'rate.vac'), quarantine duration (\verb'quar.dur'), and daily interactions (\verb'num.daily') on the burden on health care resources (\verb'load').
 
 \section{Tables and figures}\label{appendixC}
 
@@ -290,6 +289,38 @@ Explain all variables...
 	\label{tab:model_equation}
 \end{table}
 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l l l l l}\hline
+		& Df & Mean Sq & F value &  Pr(>F)    \\\hline\hline
+		\verb'soc.iso' & 1 &  5.19 & 208.37 & < 2e-16 \\\hline
+		\verb'rate.vac' & 1 & 0.081 & 3.27 & 0.075 \\\hline
+		\verb'quar.dur' & 1 & 0.40 & 16.00 & 0.00017 \\\hline
+		\verb'num.daily' & 1 & 0.89 & 35.73 & 1.06e-07 \\\hline\\
+	\end{tabular}
+	\caption{ANOVA table for main effects only}
+	\label{tab:anova}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l l l l l}\hline
+		& Estimate & Pr(>|t|) & 2.5\% & 97.5\%	\\\hline\hline
+		\verb`soc.iso0:0.5` & -0.13 & 0.00041 & -0.19 & -0.058 \\\hline
+		\verb`soc.iso0:1` & -0.62  & < 2e-16   &  -0.69  & -0.55 \\\hline
+		\verb`rate.vac0:0.01` & -0.065  & 0.060 	& -0.13  & 0.0027\\\hline
+		\verb`rate.vac0:0.02` & -0.078  &  0.026 	& -0.15 & -0.0095 \\\hline
+		\verb`quar.dur0:7` &  -0.042  &  0.22  &  -0.11 & 0.026 \\\hline
+		\verb`quar.dur0:14` &  -0.17  &  3.59e-06 	&  -0.24 & -0.10\\\hline
+		\verb`num.daily15:30` &   0.17 &  2.89e-06 & 	0.11 & 0.24\\\hline
+		\verb`num.daily15:45` &  0.26  &  1.28e-10 & 	0.19 & 0.32\\\hline\\
+	\end{tabular}
+	\caption{Contrasts}
+	\label{tab:contrasts}
+\end{table}
+
+
+\newpage
 % FIGURES
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{boxcox.pdf}
@@ -309,6 +340,31 @@ Explain all variables...
 	\label{fig:qqplot}
 \end{figure}
 
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{boxplot_soc.iso.pdf}	
+	\caption{Boxplot for social isolation}
+	\label{fig:boxplot_soc.iso}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{boxplot_vac.rate.pdf}	
+	\caption{Boxplot for vaccination rate}
+	\label{fig:boxplot_vac.rate}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{boxplot_quar.dur.pdf}	
+	\caption{Boxplot for quarantine duration}
+	\label{fig:boxplot_quar.dur}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{boxplot_num.daily.pdf}	
+	\caption{Boxplot for average number of daily interactions}
+	\label{fig:boxplot_num.daily}
+\end{figure}
+
+
 
 
 
@@ -322,6 +378,7 @@ Explain all variables...
 %-------------------------------------------
 
 % Print bibliography
+\newpage
 \printbibliography
 
 

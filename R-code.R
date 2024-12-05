@@ -7,11 +7,11 @@ head(data)
 summary(data)
 
 # Anova
-anova_model <- aov(peak.inf ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
+anova_model <- aov(load ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
 summary(anova_model)
 
 # Regression and Box-Cox
-lm_model <- lm(peak.inf ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
+lm_model <- lm(load ~ soc.iso * rate.vac * quar.dur * num.daily, data = data)
 summary(lm_model)
 confint(lm_model, level = 0.95)
 
@@ -40,112 +40,48 @@ qqnorm(lm_model$residuals)
 qqline(lm_model$residuals)
 dev.off()
 
-
 # Graphics
-# Interaction plots
-pdf("latex/interactionplot1.pdf", width = 8, height = 6)
-interaction.plot(
-  x.factor = data$soc.iso,
-  trace.factor = data$rate.vac,
-  response = data$peak.inf,
-  col = 1:4,
-  lty = 1,
-  xlab = "Social Isolation",
-  ylab = "Peak Infected",
-  trace.label = "Vaccination Rate"
-)
-dev.off()
-pdf("latex/interactionplot2.pdf", width = 8, height = 6)
-interaction.plot(
-  x.factor = data$soc.iso,
-  trace.factor = data$quar.dur,
-  response = data$peak.inf,
-  col = 1:4,
-  lty = 1,
-  xlab = "Social Isolation",
-  ylab = "Peak Infected",
-  trace.label = "Quarantine Duration"
-)
-dev.off()
-pdf("latex/interactionplot3.pdf", width = 8, height = 6)
-interaction.plot(
-  x.factor = data$soc.iso,
-  trace.factor = data$num.daily,
-  response = data$peak.inf,
-  col = 1:4,
-  lty = 1,
-  xlab = "Social Isolation",
-  ylab = "Peak Infected",
-  trace.label = "Daily Interactions"
-)
-dev.off()
-pdf("latex/interactionplot4.pdf", width = 8, height = 6)
-interaction.plot(
-  x.factor = data$rate.vac,
-  trace.factor = data$quar.dur,
-  response = data$peak.inf,
-  col = 1:4,
-  lty = 1,
-  xlab = "Vaccination Rate",
-  ylab = "Peak Infected",
-  trace.label = "Quarantine Duration"
-)
-dev.off()
-pdf("latex/interactionplot5.pdf", width = 8, height = 6)
-interaction.plot(
-  x.factor = data$rate.vac,
-  trace.factor = data$num.daily,
-  response = data$peak.inf,
-  col = 1:4,
-  lty = 1,
-  xlab = "Vaccination Rate",
-  ylab = "Peak Infected",
-  trace.label = "Daily Interactions"
-)
-dev.off()
-pdf("latex/interactionplot6.pdf", width = 8, height = 6)
-interaction.plot(
-  x.factor = data$quar.dur,
-  trace.factor = data$num.daily,
-  response = data$peak.inf,
-  col = 1:4,
-  lty = 1,
-  xlab = "Quarantine Duration",
-  ylab = "Peak Infected",
-  trace.label = "Daily Interactions"
-)
-dev.off()
-
 # Boxplots
-pdf("latex/boxplot1.pdf", width = 8, height = 6)
-ggplot(data, aes(x = as.factor(soc.iso), y = peak.inf)) +
+pdf("latex/boxplot_soc.iso.pdf", width = 8, height = 6)
+ggplot(data, aes(x = as.factor(soc.iso), y = load)) +
   geom_boxplot() +
-  labs(x = "Social Isolation Level", y = "Peak Infected")
+  labs(x = "Social Isolation Level", y = "Load")
 dev.off()
 
-pdf("latex/boxplot2.pdf", width = 8, height = 6)
-ggplot(data, aes(x = as.factor(rate.vac), y = peak.inf)) +
+pdf("latex/boxplot_vac.rate.pdf", width = 8, height = 6)
+ggplot(data, aes(x = as.factor(rate.vac), y = load)) +
   geom_boxplot() +
-  labs(x = "Vaccination Rate", y = "Peak Infected")
+  labs(x = "Vaccination Rate", y = "Load")
 dev.off()
 
-pdf("latex/boxplot3.pdf", width = 8, height = 6)
-ggplot(data, aes(x = as.factor(quar.dur), y = peak.inf)) +
+pdf("latex/boxplot_quar.dur.pdf", width = 8, height = 6)
+ggplot(data, aes(x = as.factor(quar.dur), y = load)) +
   geom_boxplot() +
-  labs(x = "Quarantine Duration (Days)", y = "Peak Infected")
+  labs(x = "Quarantine Duration (Days)", y = "Load")
 dev.off()
 
-pdf("latex/boxplot4.pdf", width = 8, height = 6)
-ggplot(data, aes(x = as.factor(num.daily), y = peak.inf)) +
+pdf("latex/boxplot_num.daily.pdf", width = 8, height = 6)
+ggplot(data, aes(x = as.factor(num.daily), y = load)) +
   geom_boxplot() +
-  labs(x = "Daily Interactions", y = "Peak Infected")
+  labs(x = "Daily Interactions", y = "Load")
 dev.off()
 
 
 
-#Optimal Combination
-aggregated_results <- aggregate(peak.inf ~ soc.iso + rate.vac + quar.dur + num.daily, data = data, mean)
-optimal_combination <- aggregated_results[which.min(aggregated_results$peak.inf), ]
+# Optimal Combination
+aggregated_results <- aggregate(load ~ soc.iso + rate.vac + quar.dur + num.daily, data = data, mean)
+aggregated_results
+# Optimal Levels for each level of daily interaction
+optimal_levels <- aggregated_results %>%
+  group_by(num.daily) %>%
+  slice_min(load, n = 1, with_ties = FALSE)
+print(optimal_levels)
+
+# For the most optimal combination of all factors levels, we somehow see 7 day quarantine
+# producing least load (less than 14 day quarantine)
+# 1	0.02	14	15	0.01031777
+# 1	0.02	7	15	0.01001565
+optimal_combination <- aggregated_results[which.min(aggregated_results$load), ]
 optimal_combination
 
 # Treatment Contrasts
@@ -161,7 +97,7 @@ contrasts(data$quar.dur) <- contr.treatment(levels(data$quar.dur), base = 1)
 contrasts(data$num.daily) <- contr.treatment(levels(data$num.daily), base = 1) 
 
 # Fit linear model with treatment contrasts
-lm_treatment <- lm(peak.inf ~ soc.iso + rate.vac + quar.dur + num.daily, data = data)
+lm_treatment <- lm(load ~ soc.iso + rate.vac + quar.dur + num.daily, data = data)
 summary(lm_treatment)
 
 confint(lm_treatment, level = 0.95)
