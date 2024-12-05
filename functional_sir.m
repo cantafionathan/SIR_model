@@ -25,7 +25,7 @@ for i = 1:length(Av)
     % randomly generated levels
     prob_spread = 0.1*rand(1)+0.05; % random number between (0.05, 0.15)
     recovery_rate = 1/(14*rand(1) + 7); % random number between (1/7, 1/21)
-    vac_eff = 0.2*rand(1) + 0.4; % random number between (0.4, 0.6)
+    vac_eff = 0.004*rand(1) + 0.001; % random number between (0.001, 0.005) ~ (99.5, 99.9)
     prob_sympt = 0.6*rand(1); % random number between (0, 0.6)
 
     load(i) = pandemic(Dv(i), Av(i), prob_spread, recovery_rate, Bv(i), vac_eff, prob_sympt, Cv(i));
